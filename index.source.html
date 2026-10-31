@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+    <script>
+      // 直接双击打开本文件时（源码入口）给出提示，避免空白页
+      if (
+        location.protocol === 'file:' &&
+        document.getElementById('root') &&
+        !document.getElementById('root').childElementCount
+      ) {
+        document.getElementById('root').innerHTML =
+          '<div style="font-family:system-ui,sans-serif;padding:48px 24px;text-align:center">' +
+          '<h2 style="margin:0 0 12px">这里是网页的源码入口，不能直接打开</h2>' +
+          '<p style="color:#666;line-height:1.8">本文件夹根目录的 <b>无畏契约商店记录.html</b> 才是网页成品，直接双击它即可使用</p>' +
+          '</div>';
+      }
+    </script>
+  </body>
+</html>
