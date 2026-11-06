@@ -3,6 +3,7 @@ import { Layout } from '@/components/Layout';
 import RecordsPage from '@/pages/Records/RecordsPage';
 import SkinsPage from '@/pages/Skins/SkinsPage';
 import StatsPage from '@/pages/Stats/StatsPage';
+import SettingsPage from '@/pages/Settings/SettingsPage';
 import NotFoundPage from '@/pages/NotFoundPage/NotFoundPage';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
         <Route index element={<RecordsPage />} />
         <Route path="skins" element={<SkinsPage />} />
         <Route path="stats" element={<StatsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
