@@ -30,20 +30,20 @@ export const TIER_META: Record<string, { label: string; chartVar: string }> = {
 export const CATEGORY_LABELS: Record<string, string> = {
   Sidearm: '随身武器',
   SMG: '微型冲锋枪',
-  Shotgun: '器弹枪',
+  Shotgun: '霰弹枪',
   Rifle: '步枪',
   Sniper: '狙击枪',
   Heavy: '重型武器',
   Melee: '近战武器',
 };
 
-/** 武器展示顺序：按游戏内官方分类排列（佩枪→冲锋→器弹→步枪→狙击→重武器→近战） */
+/** 武器展示顺序：按游戏内官方分类排列（佩枪→冲锋→霰弹→步枪→狙击→重武器→近战） */
 export const WEAPON_ORDER = [
   '标配', '短炮', '狂怒', '鬼魅', '正义', '追猎',
-  '蜂刺', '骱灵',
+  '蜂刺', '骇灵',
   '雄鹿', '判官',
-  '獗犬', '狂徒', '戍卫', '幻影', '悍狼',
-  '飞将', '萨侠', '冥騟',
+  '獠犬', '狂徒', '戍卫', '幻影', '悍狼',
+  '飞将', '莽侠', '冥驹',
   '战神', '奥丁',
   '近战武器',
 ];
