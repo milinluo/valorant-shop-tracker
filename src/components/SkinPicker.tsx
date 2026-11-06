@@ -72,7 +72,7 @@ export default function SkinPicker({
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput placeholder="搜索皮肤名称或武器…" value={query} onValueChange={setQuery} />
-          <CommandList className="max-h-72 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:hover:bg-primary/80">
+          <CommandList className="max-h-72 [&::-webkit-scrollbar]:w-[7px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:hover:bg-primary/80">
             <CommandEmpty>没有找到匹配的皮肤</CommandEmpty>
             {weapon ? (
               (() => {

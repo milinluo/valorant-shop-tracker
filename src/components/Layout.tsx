@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { BarChart3, Library, ShoppingBag } from 'lucide-react';
+import { BarChart3, Library, Settings, ShoppingBag } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Sidebar,
@@ -13,10 +14,21 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from '@/components/ui/sidebar';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import SettingsProvider from '@/components/SettingsProvider';
+import SettingsPage from '@/pages/Settings/SettingsPage';
 import SkinsProvider from '@/components/SkinsProvider';
 import RecordsProvider from '@/components/RecordsProvider';
 import { useSkins } from '@/lib/skins-context';
 import { useRecords } from '@/lib/records-context';
+import { useSettings } from '@/lib/settings-context';
+import type { SidebarStatKey } from '@/lib/settings-context';
 import { formatDateCN } from '@/lib/dates';
 
 const NAV_ITEMS: { path: string; label: string; icon: LucideIcon }[] = [
@@ -55,32 +67,36 @@ function computeStreak(dates: string[]): { current: number; longest: number; las
 function SidebarStats() {
   const { skins } = useSkins();
   const { records } = useRecords();
+  const { sidebarStats } = useSettings();
   const seenSet = new Set<string>();
-  let appearances = 0;
   for (const r of records) {
     for (const id of r.skins) {
       seenSet.add(id);
-      appearances += 1;
     }
   }
   const coverage = skins.length > 0 ? (seenSet.size / skins.length) * 100 : 0;
   const streak = computeStreak(records.map((r) => r.date));
-  const items = [
-    { label: '记录天数', value: `${records.length} 天` },
-    { label: '当前连续', value: `${streak.current} 天` },
-    { label: '最长连续', value: `${streak.longest} 天` },
-    { label: '最近记录', value: streak.lastDate ? formatDateCN(streak.lastDate) : '—' },
-    { label: '皮肤总数', value: String(skins.length) },
-    { label: '已见皮肤', value: String(seenSet.size) },
-    { label: '皮肤覆盖率', value: `${coverage.toFixed(1)}%` },
+  const items: { key: SidebarStatKey; label: string; value: string }[] = [
+    { key: 'recordDays', label: '记录天数', value: `${records.length} 天` },
+    { key: 'currentStreak', label: '当前连续', value: `${streak.current} 天` },
+    { key: 'longestStreak', label: '最长连续', value: `${streak.longest} 天` },
+    { key: 'lastRecord', label: '最近记录', value: streak.lastDate ? formatDateCN(streak.lastDate) : '—' },
+    { key: 'skinTotal', label: '皮肤总数', value: String(skins.length) },
+    { key: 'seenSkins', label: '已见皮肤', value: String(seenSet.size) },
+    { key: 'coverage', label: '皮肤覆盖率', value: `${coverage.toFixed(1)}%` },
   ];
+  const shown = items.filter((x) => sidebarStats[x.key]);
+
+  // 全部未选择时关闭整个商店概况
+  if (shown.length === 0) return null;
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>商店概况</SidebarGroupLabel>
       <div className="space-y-1.5 px-2">
-        {items.map((x) => (
+        {shown.map((x) => (
           <div
-            key={x.label}
+            key={x.key}
             className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-2.5 py-2 transition-colors hover:border-primary/30"
           >
             <span className="text-sm text-muted-foreground">{x.label}</span>
@@ -94,6 +110,7 @@ function SidebarStats() {
 
 function AppSidebar() {
   const { pathname } = useLocation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   return (
     <Sidebar>
       <SidebarHeader>
@@ -130,24 +147,47 @@ function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
         <SidebarStats />
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="设置" onClick={() => setSettingsOpen(true)}>
+                <Settings />
+                <span>设置</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto [&::-webkit-scrollbar]:w-[7px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:hover:bg-primary/80">
+          <DialogHeader>
+            <DialogTitle>设置</DialogTitle>
+            <DialogDescription>
+              自定义应用的显示选项，设置会自动保存在浏览器本地。
+            </DialogDescription>
+          </DialogHeader>
+          <SettingsPage embedded />
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   );
 }
 
 export function Layout() {
   return (
-    <SkinsProvider>
-      <RecordsProvider>
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <main className="min-w-0 flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-              <Outlet />
-            </main>
-          </SidebarInset>
-        </SidebarProvider>
-      </RecordsProvider>
-    </SkinsProvider>
+    <SettingsProvider>
+      <SkinsProvider>
+        <RecordsProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <main className="min-w-0 flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+                <Outlet />
+              </main>
+            </SidebarInset>
+          </SidebarProvider>
+        </RecordsProvider>
+      </SkinsProvider>
+    </SettingsProvider>
   );
 }

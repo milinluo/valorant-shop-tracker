@@ -51,8 +51,10 @@ export default function RecordsProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const clearRecords = () => setRecords([]);
+
   return (
-    <RecordsContext.Provider value={{ records, upsertRecord, removeRecord, importRecords }}>
+    <RecordsContext.Provider value={{ records, upsertRecord, removeRecord, importRecords, clearRecords }}>
       {children}
     </RecordsContext.Provider>
   );
