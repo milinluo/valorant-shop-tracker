@@ -10,7 +10,7 @@
 
 ![数据统计页](assets/stats.png)
 
-![设置中心](assets/settings.png)
+<img src="assets/settings.png" alt="设置中心" width="600">
 
 ## 更新内容
 
